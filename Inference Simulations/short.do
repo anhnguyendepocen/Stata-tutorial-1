@@ -5,8 +5,8 @@ set seed 1234 //to always produce the same sequence of random numbers
 cap mat drop pvalues
 
 
-quietly forvalues i=1/1000 {
-noi _dots `i' 0 0 //to display progress
+//rm//quietly forvalues i=1/1000 {
+//rm//noi _dots `i' 0 0 //to display progress
 
 	*****************SIMULATE DATA****************
 	clear
@@ -30,36 +30,36 @@ noi _dots `i' 0 0 //to display progress
 	*****************ANALYZE DATA****************
 	//plain difference in means
 	regress testscores treatment
-		quietly testparm treatment
-		local pvalue1 = `r(p)'
+	//rm//	quietly testparm treatment
+	//rm//	local pvalue1 = `r(p)'
 	
 	//adjusting standard errors
 	regress testscores treatment, cluster(class_id)
-		quietly testparm treatment
-		local pvalue2 = `r(p)'
+	//rm//	quietly testparm treatment
+	//rm//	local pvalue2 = `r(p)'
 
 	//adding strata FEs
 	regress testscores treatment i.school_id, cluster(class_id)
-		testparm treatment
-		local pvalue3 = `r(p)'
+	//rm//	testparm treatment
+	//rm//	local pvalue3 = `r(p)'
 
 	//what if our sample was much smaller? (only one school, 8 classes, 80 students)
 	keep if class_id<=8
 	
 	regress testscores treatment, cluster(class_id)
-		testparm treatment
-		local pvalue4 = `r(p)'
+	//rm//	testparm treatment
+	//rm//	local pvalue4 = `r(p)'
 		
-		mat pvalues=nullmat(pvalues)\(`pvalue1',`pvalue2',`pvalue3',`pvalue4')
-}
-clear
-set obs 1000
-svmat pvalues
-set graphics off
-hist pvalues1, name(a, replace) start(0) width(0.05)
-hist pvalues2, name(b, replace) start(0) width(0.05)
-hist pvalues3, name(c, replace) start(0) width(0.05)
-hist pvalues4, name(d, replace) start(0) width(0.05)
-set graphics on
+	//rm//	mat pvalues=nullmat(pvalues)\(`pvalue1',`pvalue2',`pvalue3',`pvalue4')
+//rm//}
+//rm//clear
+//rm//set obs 1000
+//rm//svmat pvalues
+//rm//set graphics off
+//rm//hist pvalues1, name(a, replace) start(0) width(0.05)
+//rm//hist pvalues2, name(b, replace) start(0) width(0.05)
+//rm//hist pvalues3, name(c, replace) start(0) width(0.05)
+//rm//hist pvalues4, name(d, replace) start(0) width(0.05)
+//rm//set graphics on
 
-graph combine a b c d 
+//rm//graph combine a b c d 

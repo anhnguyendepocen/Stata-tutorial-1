@@ -4,7 +4,7 @@ set matsize 10000
 set seed 1234
 cap mat drop pvalues
 
-quietly forvalues i=1/1000 {
+quietly forvalues i=1/5000 {
 	noi _dots `i' 0 0 //to display progress
 
 	*****************SIMULATE DATA****************
@@ -20,7 +20,7 @@ quietly forvalues i=1/1000 {
 	gen treatment = mod(_n,2) //classes in odd rows are treated even rows are control
 
 
-	expand 20 //20 students per  class =  8000 students
+	expand 10 //20 students per  class =  8000 students
 	
 	gen testscores = class_unobservable + school_unobservable + 0*treatment + runiform()
 
@@ -51,14 +51,14 @@ quietly forvalues i=1/1000 {
 	
 	//net describe ritest, from(https://raw.githubusercontent.com/simonheb/ritest/master/)
 	//net install ritest
-	quietly ritest treatment _b[treatment], cluster(class_id) r(200): regress testscores treatment
-	mat pvals = r(p)
-	local pvalue5 = pvals[1,1]
+	//quietly ritest treatment _b[treatment], cluster(class_id) r(200): regress testscores treatment
+	//mat pvals = r(p)
+	//local pvalue5 = pvals[1,1]
 	
 	//ssc install clustse
-	cgmwildboot testscores treatment, cluster(class_id) bootcluster(class_id) reps(200) null(0)
-	testparm treatment
-	local pvalue6 = `r(p)'
+	//cgmwildboot testscores treatment, cluster(class_id) bootcluster(class_id) reps(200) null(0)
+	//testparm treatment
+	//local pvalue6 = `r(p)'
 		
 	mat pvalues=nullmat(pvalues)\(`pvalue1',`pvalue2',`pvalue3',`pvalue4',0`pvalue5',0`pvalue6')
 }
@@ -69,9 +69,8 @@ set graphics off
 hist pvalues1, name(a, replace) start(0) width(0.1)
 hist pvalues2, name(b, replace) start(0) width(0.1)
 hist pvalues3, name(c, replace) start(0) width(0.1)
-hist pvalues4, name(d, replace) start(0) width(0.05)
+hist pvalues4, name(d, replace) start(0) width(0.1)
 hist pvalues5, name(e, replace) start(0) width(0.1)
 hist pvalues6, name(f, replace) start(0) width(0.1)
 set graphics on
-
 graph combine a b c d e f

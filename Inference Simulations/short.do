@@ -21,7 +21,7 @@ cap mat drop pvalues
 	gen treatment = mod(_n,2) //classes in odd rows are treated even rows are control
 
 
-	expand 10 //10 students per  class =  4000 students
+	expand 20 //20 students per  class =  4000 students
 	
 	gen testscores = class_unobservable + school_unobservable + 0*treatment + runiform()
 
